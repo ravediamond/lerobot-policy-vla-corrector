@@ -330,8 +330,8 @@ def ogg_velocity(
     with torch.enable_grad():
         t = torch.as_tensor(time, dtype=torch.float32, device=x_t.device).reshape(-1, 1, 1)
         x0_hat = x_t.detach() - t * v_in
-        a0 = x0_hat[:, 0, :action_dim]
-        z = z_t if z_t.ndim == 3 else z_t.unsqueeze(0)
+        a0 = x0_hat[:, 0, :action_dim].to(torch.float32)
+        z = (z_t if z_t.ndim == 3 else z_t.unsqueeze(0)).to(torch.float32)
         if z.shape[0] == 1 and bsize > 1:
             z = z.expand(bsize, -1, -1)
         tgt = target_delta if target_delta.ndim == 3 else target_delta.unsqueeze(0)

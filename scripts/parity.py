@@ -150,7 +150,9 @@ def main():
     target = torch.from_numpy(ogg["dz_pred"] - ogg["dz_real"]).to(device)[None]
     batch = make_batch(frames[flat], state[flat], tokens, mask, device)
     policy.base.reset()
-    proc = OGGProcessor(policy.corrector, z_t, target, eta=args.eta, apply_every=args.apply_every, action_dim=policy.action_dim)
+    proc = OGGProcessor(
+        policy.corrector, z_t, target, eta=args.eta, apply_every=args.apply_every, action_dim=policy.action_dim
+    )
     guided = policy.backend.guided_chunk(batch, noise.clone(), proc, None).detach().cpu().numpy()
     policy.base.reset()
     plain = policy.backend.guided_chunk(batch, noise.clone(), None, None).detach().cpu().numpy()
@@ -161,7 +163,9 @@ def main():
     report["ogg_applied_steps_plugin"] = len(proc.losses)
     report["ogg_from"] = summary_up["ogg_from"]
 
-    del policy
+    policy = None
+    base = None
+    torch.cuda.empty_cache()
     ref = load_base(args.base, device)
     wrapped = build_policy(load_base(args.base, device), up, "off", args, device)
     ref.reset()

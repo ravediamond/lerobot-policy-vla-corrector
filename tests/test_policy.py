@@ -8,7 +8,17 @@ from lerobot.utils.constants import ACTION, OBS_STATE
 from lerobot_policy_vla_corrector import VLACorrectorConfig, VLACorrectorPolicy
 from lerobot_policy_vla_corrector.corrector import MonitorStep
 from lerobot_policy_vla_corrector.modeling_vla_corrector import TELEMETRY_KEYS
-from tests.stub import ACTION_DIM, CHUNK, IMG, N_ACTION_STEPS, TOKEN_DIM, StubBackend, make_stub, observation, stub_features
+from tests.stub import (
+    ACTION_DIM,
+    CHUNK,
+    IMG,
+    N_ACTION_STEPS,
+    TOKEN_DIM,
+    StubBackend,
+    make_stub,
+    observation,
+    stub_features,
+)
 
 
 def make_policy(**overrides) -> VLACorrectorPolicy:
@@ -59,7 +69,9 @@ def test_config_rejects_bad_values():
     with pytest.raises(ValueError):
         VLACorrectorConfig(input_features=inputs, output_features=outputs, device="cpu", mode="guided")
     with pytest.raises(ValueError):
-        VLACorrectorConfig(input_features=inputs, output_features=outputs, device="cpu", k_step=5, monitor_every_n_steps=2)
+        VLACorrectorConfig(
+            input_features=inputs, output_features=outputs, device="cpu", k_step=5, monitor_every_n_steps=2
+        )
     with pytest.raises(ValueError):
         VLACorrectorConfig(input_features=inputs, output_features=outputs, device="cpu", lambda_on=2.0, lambda_off=3.0)
 

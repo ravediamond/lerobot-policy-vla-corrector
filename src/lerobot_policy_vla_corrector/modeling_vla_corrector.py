@@ -130,7 +130,9 @@ class VLACorrectorPolicy(PreTrainedPolicy):
         save_directory = Path(save_directory)
         save_directory.mkdir(parents=True, exist_ok=True)
         self.config._save_pretrained(save_directory)
-        state = {k: v.detach().cpu().contiguous() for k, v in self.state_dict().items() if k.startswith(CORRECTOR_PREFIX)}
+        state = {
+            k: v.detach().cpu().contiguous() for k, v in self.state_dict().items() if k.startswith(CORRECTOR_PREFIX)
+        }
         save_file(state, str(save_directory / WEIGHTS_FILE), metadata={"format": "pt"})
 
     @classmethod

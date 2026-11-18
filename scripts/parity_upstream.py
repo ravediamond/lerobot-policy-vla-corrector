@@ -16,7 +16,10 @@ from lerobot.safety.siglip_dynamics_mlp import SiglipDynamicsPredictor
 from lerobot.scripts.lerobot_eval_modified_detection import RobustThresholdState, robust_threshold_step
 from transformers import AutoTokenizer
 
-CAMERAS = {"observation.images.camera1": "observation.images.up", "observation.images.camera2": "observation.images.side"}
+CAMERAS = {
+    "observation.images.camera1": "observation.images.up",
+    "observation.images.camera2": "observation.images.side",
+}
 
 
 def parse():
@@ -149,9 +152,11 @@ def main():
     trig_rows = [r for r in rows if r["triggered"]]
     finite = [r for r in rows if np.isfinite(r["score"])]
     pick = trig_rows[0] if trig_rows else max(finite, key=lambda r: r["score"])
-    pay = np.load(out / f"payload_ep{pick['episode']}_t{pick['t']}.npz") if (
-        out / f"payload_ep{pick['episode']}_t{pick['t']}.npz"
-    ).exists() else None
+    pay = (
+        np.load(out / f"payload_ep{pick['episode']}_t{pick['t']}.npz")
+        if (out / f"payload_ep{pick['episode']}_t{pick['t']}.npz").exists()
+        else None
+    )
     if pay is None:
         flat = rows.index(pick)
         ep, t = pick["episode"], pick["t"]
@@ -171,7 +176,13 @@ def main():
     noise = torch.randn(
         (1, policy.config.chunk_size, policy.config.max_action_dim), generator=gen, dtype=torch.float32
     ).to(device)
-    common = (images, img_masks, prepared["observation.language.tokens"], prepared["observation.language.attention_mask"], state_t)
+    common = (
+        images,
+        img_masks,
+        prepared["observation.language.tokens"],
+        prepared["observation.language.attention_mask"],
+        state_t,
+    )
     guided = policy.model.sample_actions(
         *common,
         noise=noise.clone(),

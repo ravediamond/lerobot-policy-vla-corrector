@@ -139,9 +139,7 @@ class StubBackend:
         target = self.base.state_to_action(state)[:, None, :].expand(-1, self.base.config.chunk_size, -1)
         if noise is None:
             noise = self.base.sample_noise(target.shape, state.device)
-        return guided_euler(
-            lambda x, t: self.base.velocity(x, t, target), noise, self.base.config.num_steps, processor
-        )
+        return guided_euler(lambda x, t: self.base.velocity(x, t, target), noise, self.base.config.num_steps, processor)
 
 
 def stub_features():
