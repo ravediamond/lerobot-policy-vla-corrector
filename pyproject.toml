@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lerobot_policy_vla_corrector"
+version = "0.1.0"
+description = "VLA-Corrector (arXiv 2607.01804) as a LeRobot policy plugin: latent vision monitor and online gradient guidance on a frozen flow-matching VLA, type vla_corrector"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+requires-python = ">=3.12"
+dependencies = [
+    "lerobot==0.7.0",
+    "torch>=2.2",
+    "numpy>=1.26",
+    "safetensors>=0.4",
+]
+
+[project.optional-dependencies]
+smolvla = ["lerobot[smolvla]==0.7.0"]
+test = ["pytest>=8"]
+
+[project.urls]
+Repository = "https://github.com/ravediamond/lerobot-policy-vla-corrector"
+Paper = "https://arxiv.org/abs/2607.01804"
+Upstream = "https://github.com/ZJU-OmniAI/vla-corrector"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "B", "UP"]
+ignore = ["N812", "N806"]

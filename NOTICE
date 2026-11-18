@@ -1,0 +1,19 @@
+lerobot_policy_vla_corrector
+Copyright 2026 ravediamond
+
+This product ports the corrector of VLA-Corrector from https://github.com/ZJU-OmniAI/vla-corrector
+(commit 927a06da8f00d7df483459e9039219e076c846de, Apache-2.0, Copyright the ZJU-OmniAI authors).
+The ported parts, rewritten in src/lerobot_policy_vla_corrector/corrector.py and backends.py:
+
+- the residual latent-dynamics MLP (src/lerobot/safety/siglip_dynamics_mlp.py, SiglipResidualMLP);
+- the threshold state machine (src/lerobot/scripts/lerobot_eval_modified_detection.py, robust_threshold_step);
+- the k-step monitor loop of the same script (latent history, prediction queue, cosine mismatch,
+  action-queue clear on a trigger);
+- the online gradient guidance step of src/lerobot/policies/smolvla_modified/modeling_smolvla_modified.py
+  (VLAFlowMatchingModified.sample_actions);
+- the cosine and MSE training losses of src/siglip_dynamics/train.py.
+
+Nothing from upstream's modified copy of LeRobot is vendored; base policies are imported from lerobot 0.7.0.
+
+VLA-Corrector is described in arXiv:2607.01804, "VLA-Corrector: Lightweight Detect-and-Correct Inference for
+Adaptive Vision-Language-Action Models".
