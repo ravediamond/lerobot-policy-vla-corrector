@@ -39,14 +39,14 @@ class VLACorrectorConfig(PreTrainedConfig):
     hard_retrigger_steps: int = 3
 
     ogg_eta: float = 1.0
-    ogg_apply_every: int = 1
+    ogg_apply_every: int = 3
     ogg_calls_after_trigger: int = 1
 
     monitor_every_n_steps: int = 1
     reuse_vision_features: bool = True
     jitter_seed: int = 0
 
-    train_loss: str = "cosine"
+    train_loss: str = "both"
     optimizer_lr: float = 3e-4
     optimizer_betas: tuple[float, float] = (0.9, 0.999)
     optimizer_eps: float = 1e-8
