@@ -12,7 +12,7 @@ from lerobot_policy_vla_corrector import VLACorrectorConfig, VLACorrectorPolicy
 from lerobot_policy_vla_corrector.upstream_checkpoint import load_upstream_corrector
 
 CAMERAS = ("observation.images.camera1", "observation.images.camera2")
-DTYPES = {"fp32": torch.float32, "bf16": torch.bfloat16}
+DTYPES = {"fp32": torch.float32, "native": None}
 
 
 def parse():
@@ -22,7 +22,7 @@ def parse():
     p.add_argument("--frames-dir", required=True)
     p.add_argument("--steps", type=int, default=300)
     p.add_argument("--warmup", type=int, default=10)
-    p.add_argument("--dtypes", default="fp32,bf16")
+    p.add_argument("--dtypes", default="fp32,native")
     p.add_argument("--compile", default="eager,compile")
     p.add_argument("--modes", default="off,monitor_only,truncate_ogg")
     p.add_argument("--every", default="1,2")
@@ -40,7 +40,9 @@ def load_base(path, device, dtype):
         cfg.input_features[cam] = PolicyFeature(type=FeatureType.VISUAL, shape=(3, 480, 640))
     cfg.device = device
     base = get_policy_class(cfg.type).from_pretrained(path, config=cfg)
-    base.to(device=device, dtype=dtype)
+    base.to(device=device)
+    if dtype is not None:
+        base.to(dtype=dtype)
     base.eval()
     return base
 

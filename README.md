@@ -87,6 +87,24 @@ with upstream on one corrector trained by upstream's own scripts (2 epochs on 10
 | OGG-guided chunk with the same noise, max \|Δ\| | 0.0 |
 | `mode=off` vs the base policy, 200 steps, max \|Δ\| | 0.0 |
 
+## Latency on a Jetson Orin NX
+
+`scripts/latency.py`, SmolVLA with two 480 × 640 cameras, 300 control steps, Orin NX 16 GB in its 25 W power
+profile, SmolVLA's own mixed bf16 / fp32 weights:
+
+| mode | monitor every | compile | median ms | p95 ms |
+|---|---|---|---|---|
+| `off` | — | no | 14.8 | 16.0 |
+| `monitor_only` | 1 step | no | 240.3 | 243.0 |
+| `monitor_only` | 1 step | yes | 222.6 | 233.3 |
+| `monitor_only` | 2 steps | yes | 119.8 | 231.4 |
+| `truncate_ogg` | 1 step | no | 240.1 | 242.4 |
+
+The monitor's cost is the vision encoder: 189.7 ms median for the two images. A control loop that runs it on every
+step is limited to about 4 Hz on this board and power profile; 15 Hz needs the monitor off the control thread. An
+OGG-guided re-plan costs 218 ms more than a plain one (1386 vs 1167 ms). At re-plan steps the base reuses the
+monitor's vision tokens, which saves 175 ms (1228 vs 1403 ms). Peak CUDA memory stays under 2 GB.
+
 
 ## What we found before this port
 
