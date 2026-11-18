@@ -66,11 +66,15 @@ class SmolVLABackend:
                 raise RuntimeError("cached vision tokens do not match the images of this re-plan")
             return tok
 
+        previous = vwe.__dict__.get("embed_image")
         vwe.__dict__["embed_image"] = cached
         try:
             yield
         finally:
-            vwe.__dict__.pop("embed_image", None)
+            if previous is None:
+                vwe.__dict__.pop("embed_image", None)
+            else:
+                vwe.__dict__["embed_image"] = previous
         if calls[0] != expected:
             raise RuntimeError(f"re-plan consumed {calls[0]} cached token blocks, expected {expected}")
 
