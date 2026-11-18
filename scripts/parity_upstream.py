@@ -50,6 +50,8 @@ def build_policy(base: str, device: str) -> SmolVLAModifiedPolicy:
     policy = SmolVLAModifiedPolicy.from_pretrained(base, config=cfg)
     policy.to(device=device, dtype=torch.float32)
     policy.eval()
+    for p in policy.parameters():
+        p.requires_grad_(False)
     return policy
 
 
